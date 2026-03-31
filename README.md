@@ -2,6 +2,33 @@
 
 This tutorial shows how to compare vectors with cosine similarity and how to search them efficiently with FAISS. In simple terms, cosine similarity checks whether two vectors point in nearly the same direction, while FAISS builds search indexes that let you retrieve the closest vectors much faster than a manual scan when the dataset becomes large.
 
+## Cosine Similarity
+
+Cosine similarity measures the angle between two vectors instead of comparing their raw magnitudes. If two vectors point in nearly the same direction, their cosine similarity is high and they are treated as close matches.
+
+Formula:
+
+```text
+cos(theta) = (A.B) / (||A||.||B||)
+```
+
+Interpretation:
+
+- `1` means the vectors are pointing in the same direction.
+- `0` means the vectors are orthogonal, so there is no directional similarity.
+- `-1` means the vectors point in opposite directions.
+
+In this tutorial, the query vector is compared against all database vectors, and the vectors with the highest cosine similarity are treated as the best matches.
+
+## FAISS Search Methods
+
+FAISS is a library for efficient similarity search over dense vectors. This tutorial focuses on two search styles:
+
+- `IndexFlatL2` performs exact nearest-neighbor search. It checks every stored vector, gives exact results, and works well for smaller datasets.
+- `IndexIVFFlat` first groups vectors into regions, then searches only the most relevant regions. It usually scales better to larger datasets, but it is approximate and depends on training and `nprobe`.
+
+As a rule of thumb, cosine search or `IndexFlatL2` is easiest to use when the dataset is relatively small and exact results matter. IVF becomes more useful when the dataset is much larger and faster search is more important than retrieving the exact best match every time.
+
 ## Current State
 
 The main script is [faiss.py](/mnt/h/prakash/Publication/Guest Lecture/Siamese NN/FAISS_Tutorial/faiss.py). It generates sample vectors, compares brute-force cosine search against `IndexFlatL2`, then demonstrates `IndexIVFFlat` with clustered regions and timing comparisons.
